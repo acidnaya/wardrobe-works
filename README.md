@@ -1,9 +1,8 @@
-1. ### Keycloak Setup
-   Разворачиваем keycloak, должен появиться контейнер с названием keycloak-integration:
+1. Разворачиваем keycloak, должен появиться контейнер с названием keycloak-integration:
    ```bash
    docker-compose -f keycloak-integration/docker-compose.yml up -d
    ```
-Перейти в [Keycloak Admin UI Console](http://localhost:9090 "Keycloak Admin UI Console").
+   Далее настраиваем keycloak в [Keycloak Admin UI Console](http://localhost:9090 "Keycloak Admin UI Console").
 
    
 2. Билдим:
