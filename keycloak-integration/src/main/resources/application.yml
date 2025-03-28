@@ -1,0 +1,30 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/wardrobe-app
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+server:
+  port: 8081
+
+jwt:
+  auth:
+    converter:
+      resource-id: backend-client
+      principle-attribute: preferred_username
+
+keycloak:
+  server-url: http://localhost:9090
+  realm: wardrobe-app
+  client-id: backend-client
+  admin-client-id: admin-cli
+#  client-secret: admin
+  admin-username: admin
+  admin-password: admin
+  public-client: true
+  bearer-only: false
+
+  logging:
+    level:
+      org.springframework: DEBUG
