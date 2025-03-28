@@ -19,6 +19,3 @@
    mvn -f keycloak-integration/pom.xml spring-boot:run
    mvn -f wardrobe-service/pom.xml spring-boot:run
    ```
-
-2. Перейти [Keycloak Admin UI Console](http://localhost:9090 "Keycloak Admin UI Console")
-3. Create a new Real and name ut ```Alibou``` or update the ```application.yml``` file and specify your Realm name
