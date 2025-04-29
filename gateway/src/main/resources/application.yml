@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+#    url: jdbc:postgresql://localhost:5434/postgres
+#    username: admin
+#    password: Modus8Operandi
+    url: jdbc:postgresql://wardrobe-works-db-acidnaya.db-msk0.amvera.tech:5432/app?currentSchema=auth
+    username: postgres
+    password: Superpassword
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: auth
+  cloud:
+    gateway:
+      routes:
+        - id: wardrobe-service
+          uri: https://wardrobe-service-acidnaya.amvera.io
+          predicates:
+            - Path=/api/v1/wardrobe-service/**, /images/**
+        - id: social-service
+          uri: https://social-service-acidnaya.amvera.io
+#          uri: http://localhost:8081
+          predicates:
+            - Path=/api/v1/social-service/**
+        - id: image-service
+          uri: https://image-service-acidnaya.amvera.io
+          predicates:
+            - Path=/api/v1/image-service/**
+
+
+jwt:
+  secret: gkq7nFtcHyrbhtViXT4eCKCbuXW7wKoyziewAWmaFTjKjFrw97mUNLTqPwiAHLNs94oPkXscFr7yrUbYtrh43TxmRguw4eqXndXnsRwfiTPtqCLjFktRWeMsutrnKsH3JRfLJVMi4nXaVuyhVF77s3XwXkvX4wUedmHmHfNu4xNkhUbjcNk3AsyFxgXL3kPaMFrXJThAiLsbxfoVTRREgbJch9arYoiFj747NvKeTReKVkjNawnaMmmdmegH7Cs
+  expirationMs: 36000000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - name: auth
+        url: /v3/api-docs
+      - name: wardrobe-service
+        url: https://wardrobe-service-acidnaya.amvera.io/v3/api-docs
+      - name: social-service
+        url: https://social-service-acidnaya.amvera.io/v3/api-docs
