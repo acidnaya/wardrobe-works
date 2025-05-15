@@ -3,6 +3,7 @@ package com.diploma.socialservice.controllers;
 import com.diploma.socialservice.services.PostService;
 import com.diploma.socialservice.transfers.PostCreateRequest;
 import com.diploma.socialservice.transfers.PostResponse;
+import com.diploma.socialservice.transfers.TextUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,14 @@ public class PostController {
     public ResponseEntity<PostResponse> getPost(@RequestHeader("X-User-ID") Long userId,
                                                 @PathVariable Long postId) {
         return ResponseEntity.ok(postService.getPostById(userId, postId));
+    }
+
+    @PatchMapping("/{postId}/update/text")
+    public ResponseEntity<PostResponse> updatePostText(@RequestHeader("X-User-ID") Long userId,
+                                                       @PathVariable Long postId,
+                                                       @RequestBody TextUpdateRequest request) {
+        postService.updatePostText(userId, postId, request);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/byUser={otherUserId}/")

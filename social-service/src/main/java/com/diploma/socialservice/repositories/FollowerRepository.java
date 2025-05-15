@@ -13,8 +13,6 @@ import java.util.Optional;
 @Transactional
 @Repository
 public interface FollowerRepository extends JpaRepository<Follower, Long> {
-//    Optional<Follower> findByFollowerIdAndFollowedId(Long followerId, Long followedId);
-
     @Query("SELECT f.followed.id FROM Follower f WHERE f.follower.id = :userId")
     List<Long> findFollowedUserIdsByFollowerId(@Param("userId") Long userId);
 

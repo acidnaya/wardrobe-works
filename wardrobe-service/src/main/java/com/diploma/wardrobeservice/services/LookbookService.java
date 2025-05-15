@@ -16,6 +16,7 @@ import com.diploma.wardrobeservice.transfers.OutfitResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,8 +85,13 @@ public class LookbookService {
         var wardrobe = lookbook.getWardrobe();
         accessService.checkEditAccessThrow(userId, wardrobe);
 
-        if (wardrobe.getId() != outfit.getWardrobe().getId()) {
+        if (!Objects.equals(wardrobe.getId(), outfit.getWardrobe().getId())) {
             throw new RequestNotProcessedException("Outfit and lookbook are not in same wardrobe");
+        }
+
+        var optionalLookfit = lookbooksOutfitRepository.findByLookbookAndOutfit(lookbook, outfit);
+        if (optionalLookfit.isPresent()) {
+            throw new RequestNotProcessedException("Outfit is already in lookbook");
         }
 
         LookbooksOutfit l = LookbooksOutfit.builder()
@@ -143,5 +149,16 @@ public class LookbookService {
                 .map(LookbooksOutfit::getOutfit)
                 .map(OutfitResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteOutfit(Long userId, Long lookbookId, Long outfitId) {
+        var outfit = outfitService.getOutfitOrThrow(outfitId);
+        var lookbook = getLookbookOrThrow(lookbookId);
+        accessService.checkEditAccessThrow(userId, outfit.getWardrobe());
+        accessService.checkEditAccessThrow(userId, lookbook.getWardrobe());
+        var lookfit = lookbooksOutfitRepository
+                .findByLookbookAndOutfit(lookbook, outfit)
+                .orElseThrow(() -> new ResourceNotFoundException("Outfit in lookbook is not found"));
+        lookbooksOutfitRepository.delete(lookfit);
     }
 }

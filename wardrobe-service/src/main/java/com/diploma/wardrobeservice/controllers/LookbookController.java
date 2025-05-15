@@ -66,6 +66,14 @@ public class LookbookController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/{lookbookId}/outfit={outfitId}")
+    public ResponseEntity<String> deleteOutfit(@RequestHeader("X-User-ID") Long userId,
+                                               @PathVariable Long lookbookId,
+                                               @PathVariable Long outfitId) {
+        lookbookService.deleteOutfit(userId, lookbookId, outfitId);
+        return ResponseEntity.ok().build();
+    }
+
     @PatchMapping("/{lookbookId}/update")
     public ResponseEntity<String> updateLookbook(@RequestHeader("X-User-ID") Long userId,
                                             @PathVariable Long lookbookId,

@@ -1,11 +1,7 @@
 package com.diploma.wardrobeservice.controllers;
 
-import com.diploma.wardrobeservice.entities.Clothes;
-import com.diploma.wardrobeservice.entities.Outfit;
 import com.diploma.wardrobeservice.services.OutfitService;
-import com.diploma.wardrobeservice.transfers.ClothesResponse;
-import com.diploma.wardrobeservice.transfers.OutfitCreateRequest;
-import com.diploma.wardrobeservice.transfers.OutfitResponse;
+import com.diploma.wardrobeservice.transfers.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +21,13 @@ public class OutfitController {
     public ResponseEntity<OutfitResponse> getOutfit(@RequestHeader("X-User-ID") Long userId,
                                                        @RequestParam("outfitId") Long outfitId) {
         var response = outfitService.getOutfit(userId, outfitId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{outfitId}/full")
+    public ResponseEntity<OutfitFullResponse> getFullOutfit(@RequestHeader("X-User-ID") Long userId,
+                                                            @RequestParam("outfitId") Long outfitId) {
+        var response = outfitService.getOutfitFull(userId, outfitId);
         return ResponseEntity.ok(response);
     }
 
@@ -62,9 +65,17 @@ public class OutfitController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PatchMapping("/{outfitId}/update")
+    public ResponseEntity<String> updateOutfit(@RequestHeader("X-User-ID") Long userId,
+                                               @PathVariable("outfitId") Long outfitId,
+                                               @RequestBody OutfitUpdateRequest request) {
+        outfitService.updateOutfit(userId, outfitId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
     @DeleteMapping("/{outfitId}")
     public ResponseEntity<String> deleteOutfit(@RequestHeader("X-User-ID") Long userId,
-                                                       @RequestParam("outfitId") Long outfitId) {
+                                               @RequestParam("outfitId") Long outfitId) {
         outfitService.deleteOutfit(userId, outfitId);
         return ResponseEntity.ok().build();
     }

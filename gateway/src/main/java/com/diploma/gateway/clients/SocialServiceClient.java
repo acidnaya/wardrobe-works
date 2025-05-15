@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(
         name = "social-service",
         url = "https://social-service-acidnaya.amvera.io",
-//        url = "http://localhost:8081",
         configuration = FeignConfig.class)
 public interface SocialServiceClient {
 

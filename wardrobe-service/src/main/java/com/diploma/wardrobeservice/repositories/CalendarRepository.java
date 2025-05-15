@@ -12,4 +12,6 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
     public List<Calendar> findByUserId(Long userId);
 
     public Optional<Calendar> findById(Long calendarId);
+
+    public List<Calendar> findByUserIdAndIsPrivateFalse(Long userId);
 }

@@ -16,6 +16,7 @@ public class PostResponse {
     private OffsetDateTime createdAt;
     private String text;
     private List<String> images;
+    private List<Long> outfits;
     private Long likes;
     private Boolean isLiked;
 
@@ -26,6 +27,7 @@ public class PostResponse {
                 post.getCreatedAt(),
                 post.getText(),
                 images.stream().map(PostImage::getImagePath).toList(),
+                images.stream().map(PostImage::getOutfitId).toList(),
                 likes,
                 isLiked
         );

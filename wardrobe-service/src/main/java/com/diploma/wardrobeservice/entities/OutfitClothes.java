@@ -51,9 +51,4 @@ public class OutfitClothes {
     @Column(name = "scale", nullable = false)
     private Float scale;
 
-    @NotNull
-    @ColumnDefault("false")
-    @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted = false;
-
 }

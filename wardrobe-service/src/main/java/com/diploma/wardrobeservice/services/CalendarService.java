@@ -1,7 +1,6 @@
 package com.diploma.wardrobeservice.services;
 
 import com.diploma.wardrobeservice.entities.Calendar;
-import com.diploma.wardrobeservice.exceptions.ResourceNotAccessibleException;
 import com.diploma.wardrobeservice.exceptions.ResourceNotFoundException;
 import com.diploma.wardrobeservice.repositories.CalendarEntryRepository;
 import com.diploma.wardrobeservice.repositories.CalendarRepository;
@@ -39,8 +38,14 @@ public class CalendarService {
         calendarRepository.save(calendar);
     }
 
-    public List<CalendarResponse> getCalendarsByUser(Long userId) {
+    public List<CalendarResponse> getCalendars(Long userId) {
         return calendarRepository.findByUserId(userId).stream()
+                .map(CalendarResponse::from)
+                .toList();
+    }
+
+    public List<CalendarResponse> getCalendarsByUser(Long otherUserId) {
+        return calendarRepository.findByUserIdAndIsPrivateFalse(otherUserId).stream()
                 .map(CalendarResponse::from)
                 .toList();
     }

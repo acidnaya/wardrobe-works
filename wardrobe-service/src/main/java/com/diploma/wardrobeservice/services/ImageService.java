@@ -16,8 +16,6 @@ import java.util.UUID;
 
 @Service
 public class ImageService {
-
-    //private final Path root = Paths.get("/data/images");
     private static final String root = "/data/images";
 
     public String saveImage(Long userId, MultipartFile file) throws IOException {
@@ -29,7 +27,6 @@ public class ImageService {
         String uuid = UUID.randomUUID().toString();
         String filename = uuid + "." + extension;
 
-        // Path userDir = root.resolve(String.valueOf(userId));
         Path userDir = Paths.get(root, String.valueOf(userId));
         Files.createDirectories(userDir);
 

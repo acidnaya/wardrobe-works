@@ -3,9 +3,6 @@ server:
 
 spring:
   datasource:
-#    url: jdbc:postgresql://localhost:5434/postgres
-#    username: admin
-#    password: Modus8Operandi
     url: jdbc:postgresql://wardrobe-works-db-acidnaya.db-msk0.amvera.tech:5432/app?currentSchema=auth
     username: postgres
     password: Superpassword
@@ -25,13 +22,27 @@ spring:
             - Path=/api/v1/wardrobe-service/**, /images/**
         - id: social-service
           uri: https://social-service-acidnaya.amvera.io
-#          uri: http://localhost:8081
           predicates:
             - Path=/api/v1/social-service/**
         - id: image-service
           uri: https://image-service-acidnaya.amvera.io
           predicates:
             - Path=/api/v1/image-service/**
+
+  mail:
+    host: smtp.yandex.ru
+    port: 465
+    username: wardrobeworks@yandex.ru
+    password: czmwxevephhsmaub
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: true
 
 
 jwt:

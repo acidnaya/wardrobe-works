@@ -1,6 +1,5 @@
 package com.diploma.wardrobeservice.transfers;
 
-import com.diploma.wardrobeservice.entities.Season;
 import com.diploma.wardrobeservice.entities.Type;
 import lombok.Builder;
 import lombok.Data;

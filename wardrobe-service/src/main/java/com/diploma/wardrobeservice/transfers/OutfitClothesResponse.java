@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class OutfitClothesResponse {
+    private Long cloth_id;
     private String imagePath;
     private Float x;
     private Float y;
@@ -14,8 +15,9 @@ public class OutfitClothesResponse {
     private Short rotation;
     private Float scale;
 
-    public OutfitClothesResponse from(OutfitClothes outfitClothes, String imagePath) {
+    public static OutfitClothesResponse from(OutfitClothes outfitClothes, String imagePath) {
         return new OutfitClothesResponse(
+                outfitClothes.getCloth().getId(),
                 imagePath,
                 outfitClothes.getX(),
                 outfitClothes.getY(),

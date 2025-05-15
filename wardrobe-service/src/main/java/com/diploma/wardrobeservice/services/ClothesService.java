@@ -111,10 +111,13 @@ public class ClothesService {
                 .toList();
     }
 
+    @Transactional
     public void deleteClothes(Long userId, Long clothesId) {
         var clothes = getClothesOrThrow(clothesId);
         var wardrobe = clothes.getWardrobe();
         accessService.checkEditAccessThrow(userId, wardrobe);
+        outfitClothesRepository.deleteAllByClothId(clothesId);
+
         clothes.setIsDeleted(true);
         clothesRepository.save(clothes);
     }
@@ -143,7 +146,7 @@ public class ClothesService {
     public List<OutfitResponse> getOutfitsByClothesId(Long userId, Long clothesId) {
         var clothes = getClothesOrThrow(clothesId);
         accessService.checkViewAccessThrow(userId, clothes.getWardrobe());
-        return outfitClothesRepository.findByClothIdAndIsDeletedFalse(clothesId)
+        return outfitClothesRepository.findByClothId(clothesId)
                 .stream()
                 .map(OutfitClothes::getOutfit)
                 .map(OutfitResponse::from)

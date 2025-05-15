@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(
         name = "wardrobe-service",
         url = "https://wardrobe-service-acidnaya.amvera.io",
-//        url = "http://localhost:8081",
         configuration = FeignConfig.class)
 public interface WardrobeServiceClient {
 

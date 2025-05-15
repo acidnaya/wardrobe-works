@@ -1,6 +1,5 @@
 package com.diploma.wardrobeservice.transfers;
 
-import com.diploma.wardrobeservice.entities.Brand;
 import com.diploma.wardrobeservice.entities.Colour;
 import lombok.Builder;
 import lombok.Data;

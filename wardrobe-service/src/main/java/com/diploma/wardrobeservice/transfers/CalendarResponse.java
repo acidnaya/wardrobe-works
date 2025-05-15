@@ -1,11 +1,8 @@
 package com.diploma.wardrobeservice.transfers;
 
 import com.diploma.wardrobeservice.entities.Calendar;
-import com.diploma.wardrobeservice.entities.CalendarEntry;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor

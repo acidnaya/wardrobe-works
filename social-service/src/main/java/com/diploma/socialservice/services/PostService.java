@@ -10,6 +10,7 @@ import com.diploma.socialservice.repositories.*;
 import com.diploma.socialservice.transfers.PostCreateRequest;
 import com.diploma.socialservice.transfers.PostImageRequest;
 import com.diploma.socialservice.transfers.PostResponse;
+import com.diploma.socialservice.transfers.TextUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -127,5 +128,15 @@ public class PostService {
             var like = isLiked(post.getId(), userId);
             return PostResponse.from(post, images, likes, like);
         }).toList();
+    }
+
+    public void updatePostText(Long userId, Long postId, TextUpdateRequest request) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post not found."));
+        if (post.getUser().getId().equals(userId)) {
+            post.setText(request.getText());
+            postRepository.save(post);
+        } else {
+            throw new ResourceNotAccessibleException("Post deletion is not accessible for current user.");
+        }
     }
 }

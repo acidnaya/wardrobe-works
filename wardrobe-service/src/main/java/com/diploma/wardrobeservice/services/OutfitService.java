@@ -5,10 +5,7 @@ import com.diploma.wardrobeservice.entities.OutfitClothes;
 import com.diploma.wardrobeservice.exceptions.ResourceNotFoundException;
 import com.diploma.wardrobeservice.repositories.*;
 import com.diploma.wardrobeservice.entities.Outfit;
-import com.diploma.wardrobeservice.transfers.ClothesResponse;
-import com.diploma.wardrobeservice.transfers.OutfitClothesRequest;
-import com.diploma.wardrobeservice.transfers.OutfitCreateRequest;
-import com.diploma.wardrobeservice.transfers.OutfitResponse;
+import com.diploma.wardrobeservice.transfers.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +24,7 @@ public class OutfitService {
     private final ClothesService clothesService;
     private final AccessService accessService;
     private final ClothesRepository clothesRepository;
+    private final LookbooksOutfitRepository lookbooksOutfitRepository;
 
     public Outfit getOutfitOrThrow(Long outfitId) {
         return outfitRepository.findByIdAndIsDeletedFalse(outfitId)
@@ -49,6 +47,10 @@ public class OutfitService {
 
         for (OutfitClothesRequest outfitClothesRequest : request.getClothes()) {
             Clothes clothes = clothesService.getClothesOrThrow(outfitClothesRequest.getClothId());
+            var clothesWardrobe = clothes.getWardrobe();
+            if (wardrobe != clothesWardrobe) {
+                throw new ResourceNotFoundException("Wardrobe does not contain clothes with id: " + clothes.getId());
+            }
 
             OutfitClothes outfitClothes = new OutfitClothes();
             outfitClothes.setOutfit(outfit);
@@ -59,6 +61,45 @@ public class OutfitService {
             outfitClothes.setRotation(outfitClothesRequest.getRotation());
             outfitClothes.setScale(outfitClothesRequest.getScale());
             outfitClothesRepository.save(outfitClothes);
+        }
+    }
+
+    @Transactional
+    public void updateOutfit(Long userId, Long outfitId, OutfitUpdateRequest request) {
+        var outfit = getOutfitOrThrow(outfitId);
+        var wardrobe = outfit.getWardrobe();
+        accessService.checkEditAccessThrow(userId, wardrobe);
+
+        if (request.getName() != null) {
+            outfit.setName(request.getName());
+        }
+        if (request.getDescription() != null) {
+            outfit.setDescription(request.getDescription());
+        }
+        if (request.getImagePath() != null) {
+            outfit.setImagePath(request.getImagePath());
+        }
+        outfitRepository.save(outfit);
+
+        if (request.getClothes() != null) {
+            outfitClothesRepository.deleteAllByOutfitId(outfitId);
+            for (OutfitClothesRequest outfitClothesRequest : request.getClothes()) {
+                Clothes clothes = clothesService.getClothesOrThrow(outfitClothesRequest.getClothId());
+                var clothesWardrobe = clothes.getWardrobe();
+                if (wardrobe != clothesWardrobe) {
+                    throw new ResourceNotFoundException("Wardrobe does not contain clothes with id: " + clothes.getId());
+                }
+
+                OutfitClothes outfitClothes = new OutfitClothes();
+                outfitClothes.setOutfit(outfit);
+                outfitClothes.setCloth(clothes);
+                outfitClothes.setX(outfitClothesRequest.getX());
+                outfitClothes.setY(outfitClothesRequest.getY());
+                outfitClothes.setZIndex(outfitClothesRequest.getZIndex());
+                outfitClothes.setRotation(outfitClothesRequest.getRotation());
+                outfitClothes.setScale(outfitClothesRequest.getScale());
+                outfitClothesRepository.save(outfitClothes);
+            }
         }
     }
 
@@ -92,26 +133,37 @@ public class OutfitService {
         return OutfitResponse.from(outfit);
     }
 
+    public OutfitFullResponse getOutfitFull(Long userId, Long outfitId) {
+        var outfit = getOutfitOrThrow(outfitId);
+        accessService.checkViewAccessThrow(userId, outfit.getWardrobe());
+        var outfitClothes = outfitClothesRepository.findByOutfitId(outfitId);
+        var ocr = new java.util.ArrayList<OutfitClothesResponse>();
+        for (var oc : outfitClothes) {
+            ocr.add(OutfitClothesResponse.from(oc, oc.getCloth().getImagePath()));
+        }
+
+        return OutfitFullResponse.from(outfit, ocr);
+    }
+
     public List<ClothesResponse> getClothesByOutfitId(Long userId, Long outfitId) {
         var outfit = getOutfitOrThrow(outfitId);
         accessService.checkViewAccessThrow(userId, outfit.getWardrobe());
-        return outfitClothesRepository.findByOutfitIdAndIsDeletedFalse(outfitId)
+        return outfitClothesRepository.findByOutfitId(outfitId)
                 .stream()
                 .map(OutfitClothes::getCloth)
                 .map(ClothesResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public Outfit updateOutfit(OutfitCreateRequest request) {
-        return null;
-    }
-
+    @Transactional
     public void deleteOutfit(Long userId, Long outfitId) {
         var outfit = getOutfitOrThrow(outfitId);
         var wardrobe = outfit.getWardrobe();
         accessService.checkEditAccessThrow(userId, wardrobe);
+        lookbooksOutfitRepository.deleteAllByOutfit(outfit);
         outfit.setIsDeleted(true);
         outfitRepository.save(outfit);
+
     }
 
 }

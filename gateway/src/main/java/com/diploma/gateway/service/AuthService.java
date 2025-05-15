@@ -28,7 +28,7 @@ public class AuthService {
 
     public void register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already in use");
+            throw new RuntimeException("Адрес почты уже используется");
         }
 
         User user = User.builder()

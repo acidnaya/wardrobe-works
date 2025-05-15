@@ -53,8 +53,15 @@ public class CalendarController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<CalendarResponse>> getCalendarsByUser(@RequestHeader("X-User-ID") Long userId) {
-        var response = calendarService.getCalendarsByUser(userId);
+    public ResponseEntity<List<CalendarResponse>> getCalendars(@RequestHeader("X-User-ID") Long userId) {
+        var response = calendarService.getCalendars(userId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{otherUserId}/all")
+    public ResponseEntity<List<CalendarResponse>> getCalendarsByUser(@RequestHeader("X-User-ID") Long userId,
+                                                                     @PathVariable Long otherUserId) {
+        var response = calendarService.getCalendarsByUser(otherUserId);
         return ResponseEntity.ok(response);
     }
 

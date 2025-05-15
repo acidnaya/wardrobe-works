@@ -37,10 +37,11 @@ public class AccessService {
     }
 
     public void revoke(Long userId, Long accessId) {
-        if (!accessRepository.existsByIdAndGrantedToUserId(accessId, userId)) {
-            throw new ResourceNotFoundException("Access not found");
-        }
-        accessRepository.deleteByIdAndGrantedToUserId(accessId, userId);
+        var access = accessRepository.findById(accessId).orElseThrow(
+                () -> new ResourceNotFoundException("Access not found"));
+        var wardrobe = access.getWardrobe();
+        checkEditAccess(userId, wardrobe);
+        accessRepository.deleteById(accessId);
     }
 
     public boolean checkEditAccess(Long userId, Wardrobe wardrobe) {
@@ -88,6 +89,4 @@ public class AccessService {
             throw new ResourceNotAccessibleException("User does not have view access to this calendar");
         }
     }
-
-
 }

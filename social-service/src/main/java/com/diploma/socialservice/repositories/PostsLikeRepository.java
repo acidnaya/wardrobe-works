@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Repository
 public interface PostsLikeRepository extends JpaRepository<PostsLike, Long> {
-//    PostsLike findByPostIdAndIsDeletedFalse(Long postId);
     Long countByPostId(Long postId);
 
     boolean existsByPostIdAndUserId(Long postId, Long userId);
